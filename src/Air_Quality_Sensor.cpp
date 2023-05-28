@@ -5,7 +5,7 @@
 #include "Particle.h"
 #line 1 "/Users/friedl/Desktop/Projects/Air_Quality_Sensor/src/Air_Quality_Sensor.ino"
 
-//#include "Adafruit_SPIDevice.h"
+// Include Air quality sensor libraries //
 #include "../lib/SGP30/src/Adafruit_SPIDevice.h"
 #include "../lib/SGP30/src/Adafruit_I2CDevice.h"
 #include "../lib/SGP30/src/Adafruit_BusIO_Register.h"
@@ -26,23 +26,23 @@ void draw_screen();
 void print_values();
 void loop();
 #line 16 "/Users/friedl/Desktop/Projects/Air_Quality_Sensor/src/Air_Quality_Sensor.ino"
-#define TFT_CS        S3
-#define TFT_RST       D6        
-#define TFT_DC        D5
+#define TFT_CS        S3                                            // Define CS pin for TFT display
+#define TFT_RST       D6                                            // Define RST pin for TFT display
+#define TFT_DC        D5                                            // Define DC pin for TFT display
 
+int tvoc_state[4] = {0,0,0,0};                                      // initialise array to handle TVOC readings display
+int co2_state[4] = {0,0,0,0};                                       // initialise array to handle CO2 readings display
 
-int tvoc_state[4] = {0,0,0,0};
-int co2_state[4] = {0,0,0,0};
+unsigned long previousMillis = 0;                                   // Timer that will used in print_values() funtion.  
+const long interval = 10000;                                        // Set duration between readings in millis e.g. 10 000 = 10s 
 
-unsigned long previousMillis = 0;        
-const long interval = 10000;   
+int counter = 0;                                                    // start counter.  used in SPG30 fucntion to call baseline readings 
 
 Adafruit_ST7789 tft = Adafruit_ST7789(TFT_CS, TFT_DC, TFT_RST);     // Hardware SPI
 
 float p = 3.1415926;
 
-
-Adafruit_SGP30 sgp;
+Adafruit_SGP30 sgp;                                                 // call SPG30 sensor
 
 /* return absolute humidity [mg/m^3] with approximation formula
 * @param temperature [°C]
@@ -58,34 +58,26 @@ uint32_t getAbsoluteHumidity(float temperature, float humidity) {
 
 void setup() {
 
-   // TFT Setup //
-  Serial.begin(115200);
+  Serial.begin(115200);                                                                // Start serial
   
   tft.init(240, 320);                                                                  // Init ST7789 320x240 
-  tft.fillScreen(ST77XX_BLACK);
+  tft.fillScreen(ST77XX_BLACK);                                                        // creates black background in dsiplay
 
-  while (!Serial) { delay(10); } // Wait for serial console to open!
+  while (!Serial) { delay(10); }                                                       // Wait for serial console to open!
 
   //Particle.publish("SGP30 test", PRIVATE);                                           // DEBUG
 
-  if (! sgp.begin()){
-    //Particle.publish("Sensor not found", PRIVATE);                                   // DEBUG -- initialising SGP30 sensor
+  if (! sgp.begin()){                                                                  // initialise SGP30 sensor
+    //Particle.publish("Sensor not found", PRIVATE);                                   // DEBUG 
     while (1);
   }
   
-  //Particle.publish("Found SGP30 serial #", PRIVATE);                                 // DEBUG                   
-  //Serial.print(sgp.serialnumber[0], HEX);
-  //Serial.print(sgp.serialnumber[1], HEX);
-  //Serial.println(sgp.serialnumber[2], HEX);
-
   delay(50);
 
   // If you have a baseline measurement from before you can assign it to start, to 'self-calibrate'
   //sgp.setIAQBaseline(0x8E68, 0x8F41);  // Will vary for each sensor!
   
 }
-
-int counter = 0;
 
 void measure() {
 

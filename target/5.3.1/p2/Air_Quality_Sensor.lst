@@ -31,23 +31,23 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
  13 .module_info_crc 00000004  085ffffc  085ffffc  0001fffc  2**0
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
- 14 .debug_info   00154623  00000000  00000000  00020000  2**0
+ 14 .debug_info   001545f0  00000000  00000000  00020000  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 15 .debug_abbrev 00016dc8  00000000  00000000  00174623  2**0
+ 15 .debug_abbrev 00016d8f  00000000  00000000  001745f0  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_loc    00044fdd  00000000  00000000  0018b3eb  2**0
+ 16 .debug_loc    00044fdd  00000000  00000000  0018b37f  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_aranges 00002f88  00000000  00000000  001d03c8  2**0
+ 17 .debug_aranges 00002f88  00000000  00000000  001d035c  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_ranges 0000b950  00000000  00000000  001d3350  2**0
+ 18 .debug_ranges 0000b950  00000000  00000000  001d32e4  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .debug_macro  0002d57b  00000000  00000000  001deca0  2**0
+ 19 .debug_macro  0002d57b  00000000  00000000  001dec34  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 20 .debug_line   0004e906  00000000  00000000  0020c21b  2**0
+ 20 .debug_line   0004e901  00000000  00000000  0020c1af  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 21 .debug_str    000cf4f0  00000000  00000000  0025ab21  2**0
+ 21 .debug_str    000cf4f0  00000000  00000000  0025aab0  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 22 .debug_frame  00008a28  00000000  00000000  0032a014  2**2
+ 22 .debug_frame  00008a28  00000000  00000000  00329fa0  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -257,8 +257,7 @@ void __cxa_guard_release (__guard *g) {*(char *)g = 1;};
 void setup() {
  23fa800:	b508      	push	{r3, lr}
 
-   // TFT Setup //
-  Serial.begin(115200);
+  Serial.begin(115200);                                                                // Start serial
  23fa802:	f003 f821 	bl	23fd848 <_Z16_fetch_usbserialv>
  23fa806:	f44f 31e1 	mov.w	r1, #115200	; 0x1c200
  23fa80a:	f003 f80b 	bl	23fd824 <_ZN9USBSerial5beginEl>
@@ -268,12 +267,12 @@ void setup() {
  23fa810:	480f      	ldr	r0, [pc, #60]	; (23fa850 <setup+0x50>)
  23fa812:	f44f 72a0 	mov.w	r2, #320	; 0x140
  23fa816:	f001 fabd 	bl	23fbd94 <_ZN15Adafruit_ST77894initEtt>
-  tft.fillScreen(ST77XX_BLACK);
+  tft.fillScreen(ST77XX_BLACK);                                                        // creates black background in dsiplay
  23fa81a:	2100      	movs	r1, #0
  23fa81c:	480c      	ldr	r0, [pc, #48]	; (23fa850 <setup+0x50>)
  23fa81e:	f000 fb9d 	bl	23faf5c <_ZN12Adafruit_GFX10fillScreenEt>
 
-  while (!Serial) { delay(10); } // Wait for serial console to open!
+  while (!Serial) { delay(10); }                                                       // Wait for serial console to open!
  23fa822:	f003 f811 	bl	23fd848 <_Z16_fetch_usbserialv>
  23fa826:	f003 f804 	bl	23fd832 <_ZN9USBSerialcvbEv>
  23fa82a:	b918      	cbnz	r0, 23fa834 <setup+0x34>
@@ -283,21 +282,18 @@ void setup() {
 
   //Particle.publish("SGP30 test", PRIVATE);                                           // DEBUG
 
-  if (! sgp.begin()){
+  if (! sgp.begin()){                                                                  // initialise SGP30 sensor
  23fa834:	f003 f996 	bl	23fdb64 <_Z19__fetch_global_Wirev>
  23fa838:	2201      	movs	r2, #1
  23fa83a:	4601      	mov	r1, r0
  23fa83c:	4805      	ldr	r0, [pc, #20]	; (23fa854 <setup+0x54>)
  23fa83e:	f001 fcb0 	bl	23fc1a2 <_ZN14Adafruit_SGP305beginEP7TwoWireb>
  23fa842:	b900      	cbnz	r0, 23fa846 <setup+0x46>
-    //Particle.publish("Sensor not found", PRIVATE);                                   // DEBUG -- initialising SGP30 sensor
+    //Particle.publish("Sensor not found", PRIVATE);                                   // DEBUG 
     while (1);
  23fa844:	e7fe      	b.n	23fa844 <setup+0x44>
-  //Particle.publish("Found SGP30 serial #", PRIVATE);                                 // DEBUG                   
-  //Serial.print(sgp.serialnumber[0], HEX);
-  //Serial.print(sgp.serialnumber[1], HEX);
-  //Serial.println(sgp.serialnumber[2], HEX);
-
+  }
+  
   delay(50);
  23fa846:	2032      	movs	r0, #50	; 0x32
 
@@ -1004,7 +1000,7 @@ Adafruit_ST7789 tft = Adafruit_ST7789(TFT_CS, TFT_DC, TFT_RST);     // Hardware 
  23fad78:	f001 f802 	bl	23fbd80 <_ZN15Adafruit_ST7789C1Eaaa>
 }
  23fad7c:	e8bd 4008 	ldmia.w	sp!, {r3, lr}
-Adafruit_SGP30 sgp;
+Adafruit_SGP30 sgp;                                                 // call SPG30 sensor
  23fad80:	4803      	ldr	r0, [pc, #12]	; (23fad90 <_GLOBAL__sub_I_tvoc_state+0x28>)
  23fad82:	f001 b99a 	b.w	23fc0ba <_ZN14Adafruit_SGP30C1Ev>
  23fad86:	bf00      	nop
