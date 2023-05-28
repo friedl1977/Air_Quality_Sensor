@@ -6,5 +6,6 @@
     },
     "particle.firmwareVersion": "5.3.1",
     "particle.targetPlatform": "p2",
-    "particle.targetDevice": "0a10aced202194944a04090c"
+    "particle.targetDevice": "0a10aced202194944a04090c",
+    "cmake.configureOnOpen": true
 }

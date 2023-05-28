@@ -68,7 +68,7 @@ void setup() {
   //Particle.publish("SGP30 test", PRIVATE);                                           // DEBUG
 
   if (! sgp.begin()){                                                                  // initialise SGP30 sensor
-    //Particle.publish("Sensor not found", PRIVATE);                                   // DEBUG 
+    //Particle.publish("Sensor not found", PRIVATE);                                   // DEBUG -- uncomment if you are not sure whether your sensor is working.
     while (1);
   }
   
@@ -87,18 +87,18 @@ void measure() {
 //sgp.setHumidity(getAbsoluteHumidity(temperature, humidity));
 
   if (! sgp.IAQmeasure()) {
-    Serial.println("Measurement failed");
+    Serial.println("Measurement failed");                                             // cofirm wiring if this fails
     return;
   }
   
   //Particle.publish("eCO2 " + String(sgp.eCO2) +" ppm", PRIVATE);                     // DEBUG
 
-  if ((sgp.TVOC >= 0) && (sgp.TVOC <= 220) && (tvoc_state[0] == 0)) {
+  if ((sgp.TVOC >= 0) && (sgp.TVOC <= 220) && (tvoc_state[0] == 0)) {                  // TVOC measurement brackets to define warning indicator colour.
     Serial.print("G_TVOC "); Serial.print(sgp.TVOC); Serial.print(" ppb\t");           // DEBUG
     tft.fillRect(0,165,240,95,ST77XX_GREEN);
   
-    tvoc_state[0] = 1;
-    tvoc_state[1] = 0;
+    tvoc_state[0] = 1;                                                                  // Array is contructed to prevent code from writing the images consitently if there has been no change
+    tvoc_state[1] = 0;                                                                  // This applies to the entire IF stament for both TVOC and CO2   
     tvoc_state[2] = 0;
     tvoc_state[3] = 0;
 
@@ -169,7 +169,7 @@ if ((sgp.eCO2 >= 0) && (sgp.eCO2 <= 1000) && (co2_state[0] == 0)) {
   //Particle.publish("Raw H2 " + String(sgp.rawH2) + " \t", PRIVATE);                  // additional paramenters
   //Particle.publish("Raw Ethanol "+ String (sgp.rawEthanol) + "", PRIVATE);           // additional paramenters
 
-  counter++;
+  counter++;                                
   if (counter == 30) {
     counter = 0;
 
@@ -184,17 +184,17 @@ if ((sgp.eCO2 >= 0) && (sgp.eCO2 <= 1000) && (co2_state[0] == 0)) {
   //Particle.publish(" & TVOC: 0x" + String(TVOC_base, HEX), PRIVATE);
   }
 
-  draw_screen();
+  draw_screen();                                                                         // calls draw_screen() function
 }
 
 void draw_screen() {
   
-  tft.setFont(&FreeSansBold12pt7b);
-  tft.setTextColor(ST77XX_WHITE);
-  tft.setTextWrap(false);
-  tft.setTextSize(3);
+  tft.setFont(&FreeSansBold12pt7b);                                                      // set font
+  tft.setTextColor(ST77XX_WHITE);                                                        // set font colour
+  tft.setTextWrap(false); 
+  tft.setTextSize(3);                                                                    // set font size
   
-  tft.setCursor(45, 70);
+  tft.setCursor(45, 70);                                                                 // set sursor to start writing text
   tft.print("CO2");
   
   tft.setCursor(15, 235);
@@ -205,23 +205,13 @@ void draw_screen() {
 }
 
 void print_values() {
-
- // if ((sgp.eCO2 <=9) || (sgp.TVOC <=9)) {
-    tft.fillRect(0,95,120,60,ST77XX_WHITE);
-    tft.fillRect(121,95,120,60,ST77XX_BLUE);
+ 
+  tft.fillRect(0,95,120,60,ST77XX_WHITE);                                               // draws background fills for readings
+  tft.fillRect(121,95,120,60,ST77XX_BLUE);                                               
     
-    tft.fillRect(0,260,120,60,ST77XX_WHITE);
-    tft.fillRect(121,260,120,60,ST77XX_BLUE);
+  tft.fillRect(0,260,120,60,ST77XX_WHITE);
+  tft.fillRect(121,260,120,60,ST77XX_BLUE);
    
-    // } else if ((sgp.eCO2 <=99) || (sgp.TVOC <=99)) {
-    //         tft.fillRect(0,125,135,30,ST77XX_WHITE);
-    //         tft.fillRect(0,290,135,30,ST77XX_WHITE);
-  
-    // } else if ((sgp.eCO2 <=999) || (sgp.TVOC <=999)) { 
-    //         tft.fillRect(0,125,135,30,ST77XX_WHITE);
-    //         tft.fillRect(0,290,135,30,ST77XX_WHITE);
-    // }
-
   tft.setTextWrap(false);
   tft.setCursor(25, 120);
   tft.setTextColor(ST77XX_BLUE);
@@ -230,13 +220,13 @@ void print_values() {
   tft.println(sgp.eCO2);
   tft.setCursor(25, 145);
   tft.println("ppm");
-  //Serial.print("G_eCO2 "); Serial.print(sgp.eCO2); Serial.print(" ppm");
+  //Serial.print("G_eCO2 "); Serial.print(sgp.eCO2); Serial.print(" ppm");              // DEBUG
   
   tft.setCursor(25, 285);
   tft.println(sgp.TVOC); 
   tft.setCursor(25, 310);
   tft.println("ppb\\t");
-  //Serial.print("G_TVOC "); Serial.print(sgp.TVOC); Serial.print(" ppb\t");
+  //Serial.print("G_TVOC "); Serial.print(sgp.TVOC); Serial.print(" ppb\t");            // DEBUG
 
   tft.setCursor(150, 120);
   tft.setTextColor(ST77XX_WHITE);
@@ -255,9 +245,9 @@ void print_values() {
 
 void loop() {
 
-  measure();
+  measure();                                                                            // calls measure() function
 
-  unsigned long currentMillis = millis(); 
+  unsigned long currentMillis = millis();                                               // starts timer.  when timer has ellapsed, print_values() function is called.
   if (currentMillis - previousMillis >= interval) {
     print_values();
     previousMillis = currentMillis;

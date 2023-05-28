@@ -43,9 +43,9 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  19 .debug_macro  0002d57b  00000000  00000000  001dec34  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 20 .debug_line   0004e901  00000000  00000000  0020c1af  2**0
+ 20 .debug_line   0004e8ff  00000000  00000000  0020c1af  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 21 .debug_str    000cf4f0  00000000  00000000  0025aab0  2**0
+ 21 .debug_str    000cf4f0  00000000  00000000  0025aaae  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  22 .debug_frame  00008a28  00000000  00000000  00329fa0  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
@@ -289,7 +289,7 @@ void setup() {
  23fa83c:	4805      	ldr	r0, [pc, #20]	; (23fa854 <setup+0x54>)
  23fa83e:	f001 fcb0 	bl	23fc1a2 <_ZN14Adafruit_SGP305beginEP7TwoWireb>
  23fa842:	b900      	cbnz	r0, 23fa846 <setup+0x46>
-    //Particle.publish("Sensor not found", PRIVATE);                                   // DEBUG 
+    //Particle.publish("Sensor not found", PRIVATE);                                   // DEBUG -- uncomment if you are not sure whether your sensor is working.
     while (1);
  23fa844:	e7fe      	b.n	23fa844 <setup+0x44>
   }
@@ -310,13 +310,13 @@ void setup() {
 023fa858 <_Z11draw_screenv>:
   }
 
-  draw_screen();
+  draw_screen();                                                                         // calls draw_screen() function
 }
 
 void draw_screen() {
  23fa858:	b510      	push	{r4, lr}
   
-  tft.setFont(&FreeSansBold12pt7b);
+  tft.setFont(&FreeSansBold12pt7b);                                                      // set font
  23fa85a:	4c0f      	ldr	r4, [pc, #60]	; (23fa898 <_Z11draw_screenv+0x40>)
  23fa85c:	490f      	ldr	r1, [pc, #60]	; (23fa89c <_Z11draw_screenv+0x44>)
  23fa85e:	4620      	mov	r0, r4
@@ -336,9 +336,9 @@ void draw_screen() {
   /**********************************************************************/
   void setTextWrap(boolean w) { wrap = w; }
  23fa86a:	2300      	movs	r3, #0
-  tft.setTextColor(ST77XX_WHITE);
-  tft.setTextWrap(false);
-  tft.setTextSize(3);
+  tft.setTextColor(ST77XX_WHITE);                                                        // set font colour
+  tft.setTextWrap(false); 
+  tft.setTextSize(3);                                                                    // set font size
  23fa86c:	4620      	mov	r0, r4
  23fa86e:	2103      	movs	r1, #3
  23fa870:	76e3      	strb	r3, [r4, #27]
@@ -346,7 +346,7 @@ void draw_screen() {
   void setCursor(int16_t x, int16_t y) { cursor_x = x; cursor_y = y; }
  23fa876:	4b0a      	ldr	r3, [pc, #40]	; (23fa8a0 <_Z11draw_screenv+0x48>)
   
-  tft.setCursor(45, 70);
+  tft.setCursor(45, 70);                                                                 // set sursor to start writing text
   tft.print("CO2");
  23fa878:	4620      	mov	r0, r4
  23fa87a:	490a      	ldr	r1, [pc, #40]	; (23fa8a4 <_Z11draw_screenv+0x4c>)
@@ -379,14 +379,13 @@ void draw_screen() {
 
 void print_values() {
  23fa8b0:	b5f7      	push	{r0, r1, r2, r4, r5, r6, r7, lr}
-
- // if ((sgp.eCO2 <=9) || (sgp.TVOC <=9)) {
-    tft.fillRect(0,95,120,60,ST77XX_WHITE);
+ 
+  tft.fillRect(0,95,120,60,ST77XX_WHITE);                                               // draws background fills for readings
  23fa8b2:	253c      	movs	r5, #60	; 0x3c
  23fa8b4:	f64f 77ff 	movw	r7, #65535	; 0xffff
-    tft.fillRect(121,95,120,60,ST77XX_BLUE);
+  tft.fillRect(121,95,120,60,ST77XX_BLUE);                                               
  23fa8b8:	261f      	movs	r6, #31
-    tft.fillRect(0,95,120,60,ST77XX_WHITE);
+  tft.fillRect(0,95,120,60,ST77XX_WHITE);                                               // draws background fills for readings
  23fa8ba:	4c3d      	ldr	r4, [pc, #244]	; (23fa9b0 <_Z12print_valuesv+0x100>)
  23fa8bc:	e9cd 5700 	strd	r5, r7, [sp]
  23fa8c0:	4620      	mov	r0, r4
@@ -394,7 +393,7 @@ void print_values() {
  23fa8c4:	225f      	movs	r2, #95	; 0x5f
  23fa8c6:	2100      	movs	r1, #0
  23fa8c8:	f000 ffe7 	bl	23fb89a <_ZN15Adafruit_SPITFT8fillRectEsssst>
-    tft.fillRect(121,95,120,60,ST77XX_BLUE);
+  tft.fillRect(121,95,120,60,ST77XX_BLUE);                                               
  23fa8cc:	4620      	mov	r0, r4
  23fa8ce:	e9cd 5600 	strd	r5, r6, [sp]
  23fa8d2:	2378      	movs	r3, #120	; 0x78
@@ -402,14 +401,14 @@ void print_values() {
  23fa8d6:	2179      	movs	r1, #121	; 0x79
  23fa8d8:	f000 ffdf 	bl	23fb89a <_ZN15Adafruit_SPITFT8fillRectEsssst>
     
-    tft.fillRect(0,260,120,60,ST77XX_WHITE);
+  tft.fillRect(0,260,120,60,ST77XX_WHITE);
  23fa8dc:	4620      	mov	r0, r4
  23fa8de:	e9cd 5700 	strd	r5, r7, [sp]
  23fa8e2:	2378      	movs	r3, #120	; 0x78
  23fa8e4:	f44f 7282 	mov.w	r2, #260	; 0x104
  23fa8e8:	2100      	movs	r1, #0
  23fa8ea:	f000 ffd6 	bl	23fb89a <_ZN15Adafruit_SPITFT8fillRectEsssst>
-    tft.fillRect(121,260,120,60,ST77XX_BLUE);
+  tft.fillRect(121,260,120,60,ST77XX_BLUE);
  23fa8ee:	4620      	mov	r0, r4
  23fa8f0:	e9cd 5600 	strd	r5, r6, [sp]
  23fa8f4:	2378      	movs	r3, #120	; 0x78
@@ -470,7 +469,7 @@ void print_values() {
  23fa94a:	4620      	mov	r0, r4
  23fa94c:	f002 fdb9 	bl	23fd4c2 <_ZN5Print7printlnEv>
  23fa950:	4b1e      	ldr	r3, [pc, #120]	; (23fa9cc <_Z12print_valuesv+0x11c>)
-  //Serial.print("G_eCO2 "); Serial.print(sgp.eCO2); Serial.print(" ppm");
+  //Serial.print("G_eCO2 "); Serial.print(sgp.eCO2); Serial.print(" ppm");              // DEBUG
   
   tft.setCursor(25, 285);
   tft.println(sgp.TVOC); 
@@ -561,15 +560,15 @@ void measure() {
  23fa9f2:	4628      	mov	r0, r5
  23fa9f4:	f001 fc23 	bl	23fc23e <_ZN14Adafruit_SGP3010IAQmeasureEv>
  23fa9f8:	b938      	cbnz	r0, 23faa0a <_Z7measurev+0x1e>
-    Serial.println("Measurement failed");
+    Serial.println("Measurement failed");                                             // cofirm wiring if this fails
  23fa9fa:	f002 ff25 	bl	23fd848 <_Z16_fetch_usbserialv>
  23fa9fe:	49af      	ldr	r1, [pc, #700]	; (23facbc <_Z7measurev+0x2d0>)
 }
  23faa00:	b006      	add	sp, #24
  23faa02:	e8bd 4070 	ldmia.w	sp!, {r4, r5, r6, lr}
-    Serial.println("Measurement failed");
+    Serial.println("Measurement failed");                                             // cofirm wiring if this fails
  23faa06:	f002 bd68 	b.w	23fd4da <_ZN5Print7printlnEPKc>
-  if ((sgp.TVOC >= 0) && (sgp.TVOC <= 220) && (tvoc_state[0] == 0)) {
+  if ((sgp.TVOC >= 0) && (sgp.TVOC <= 220) && (tvoc_state[0] == 0)) {                  // TVOC measurement brackets to define warning indicator colour.
  23faa0a:	882b      	ldrh	r3, [r5, #0]
  23faa0c:	4cac      	ldr	r4, [pc, #688]	; (23facc0 <_Z7measurev+0x2d4>)
  23faa0e:	2bdc      	cmp	r3, #220	; 0xdc
@@ -597,11 +596,11 @@ void measure() {
  23faa44:	23f0      	movs	r3, #240	; 0xf0
  23faa46:	48a1      	ldr	r0, [pc, #644]	; (23faccc <_Z7measurev+0x2e0>)
  23faa48:	f000 ff27 	bl	23fb89a <_ZN15Adafruit_SPITFT8fillRectEsssst>
-    tvoc_state[0] = 1;
+    tvoc_state[0] = 1;                                                                  // Array is contructed to prevent code from writing the images consitently if there has been no change
  23faa4c:	2301      	movs	r3, #1
     tvoc_state[3] = 0;
  23faa4e:	e9c4 6602 	strd	r6, r6, [r4, #8]
-    tvoc_state[1] = 0;
+    tvoc_state[1] = 0;                                                                  // This applies to the entire IF stament for both TVOC and CO2   
  23faa52:	e9c4 3600 	strd	r3, r6, [r4]
     print_values();
  23faa56:	f7ff ff2b 	bl	23fa8b0 <_Z12print_valuesv>
@@ -640,21 +639,21 @@ if ((sgp.eCO2 >= 0) && (sgp.eCO2 <= 1000) && (co2_state[0] == 0)) {
  23faaa6:	60b4      	str	r4, [r6, #8]
           co2_state[3] = 0;
  23faaa8:	60f4      	str	r4, [r6, #12]
-  counter++;
+  counter++;                                
  23faaaa:	4b8c      	ldr	r3, [pc, #560]	; (23facdc <_Z7measurev+0x2f0>)
  23faaac:	681a      	ldr	r2, [r3, #0]
   if (counter == 30) {
  23faaae:	2a1d      	cmp	r2, #29
-  counter++;
+  counter++;                                
  23faab0:	f102 0101 	add.w	r1, r2, #1
   if (counter == 30) {
  23faab4:	f000 8114 	beq.w	23face0 <_Z7measurev+0x2f4>
-  counter++;
+  counter++;                                
  23faab8:	6019      	str	r1, [r3, #0]
 }
  23faaba:	b006      	add	sp, #24
  23faabc:	e8bd 4070 	ldmia.w	sp!, {r4, r5, r6, lr}
-  draw_screen();
+  draw_screen();                                                                         // calls draw_screen() function
  23faac0:	f7ff beca 	b.w	23fa858 <_Z11draw_screenv>
   } else if ((sgp.TVOC >= 221) && (sgp.TVOC <= 660) && (tvoc_state[1] == 0)) {
  23faac4:	f1a3 02dd 	sub.w	r2, r3, #221	; 0xdd
@@ -957,7 +956,7 @@ inline particle::Flags<TagT, ValueT>::Flags(ValueT val) :
 void loop() {
  23fad40:	b538      	push	{r3, r4, r5, lr}
 
-  measure();
+  measure();                                                                            // calls measure() function
  23fad42:	f7ff fe53 	bl	23fa9ec <_Z7measurev>
 
 #ifdef __cplusplus
@@ -967,7 +966,7 @@ extern "C" {
 inline system_tick_t millis(void) { return HAL_Timer_Get_Milli_Seconds(); }
  23fad46:	f001 fad9 	bl	23fc2fc <HAL_Timer_Get_Milli_Seconds>
 
-  unsigned long currentMillis = millis(); 
+  unsigned long currentMillis = millis();                                               // starts timer.  when timer has ellapsed, print_values() function is called.
   if (currentMillis - previousMillis >= interval) {
  23fad4a:	f242 720f 	movw	r2, #9999	; 0x270f
  23fad4e:	4d05      	ldr	r5, [pc, #20]	; (23fad64 <loop+0x24>)
