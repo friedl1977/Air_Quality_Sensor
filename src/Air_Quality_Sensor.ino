@@ -55,7 +55,7 @@ void setup() {
   //Particle.publish("SGP30 test", PRIVATE);                                           // DEBUG
 
   if (! sgp.begin()){                                                                  // initialise SGP30 sensor
-    //Particle.publish("Sensor not found", PRIVATE);                                   // DEBUG 
+    //Particle.publish("Sensor not found", PRIVATE);                                   // DEBUG -- uncomment if you are not sure whether your sensor is working.
     while (1);
   }
   
