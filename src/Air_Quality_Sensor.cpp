@@ -33,6 +33,8 @@ void loop();
 int tvoc_state[4] = {0,0,0,0};                                      // initialise array to handle TVOC readings display
 int co2_state[4] = {0,0,0,0};                                       // initialise array to handle CO2 readings display
 
+int FAN = A2;                                                       // Set fan speed control pin
+
 unsigned long previousMillis = 0;                                   // Timer that will used in print_values() funtion.  
 const long interval = 10000;                                        // Set duration between readings in millis e.g. 10 000 = 10s 
 
@@ -59,6 +61,11 @@ uint32_t getAbsoluteHumidity(float temperature, float humidity) {
 void setup() {
 
   Serial.begin(115200);                                                                // Start serial
+
+  pinMode(FAN, OUTPUT);                                                                // sets the pin as output
+  //analogWrite(FAN, 230);           
+  analogWriteResolution(FAN, 12);                                                      // sets analogWrite resolution to 12 bits
+  analogWrite(FAN, 3000, 1000);                                                        // 3000/4095 = ~73% duty cycle at 1kHz               
   
   tft.init(240, 320);                                                                  // Init ST7789 320x240 
   tft.fillScreen(ST77XX_BLACK);                                                        // creates black background in dsiplay
@@ -68,7 +75,7 @@ void setup() {
   //Particle.publish("SGP30 test", PRIVATE);                                           // DEBUG
 
   if (! sgp.begin()){                                                                  // initialise SGP30 sensor
-    //Particle.publish("Sensor not found", PRIVATE);                                   // DEBUG -- uncomment if you are not sure whether your sensor is working.
+    Particle.publish("Sensor not found", PRIVATE);                                     // DEBUG -- uncomment if you are not sure whether your sensor is working.
     while (1);
   }
   
