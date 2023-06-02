@@ -33,11 +33,8 @@ void loop();
 int tvoc_state[4] = {0,0,0,0};                                      // initialise array to handle TVOC readings display
 int co2_state[4] = {0,0,0,0};                                       // initialise array to handle CO2 readings display
 
-int FAN = A2;                                                       // Set fan speed control pin
-
 unsigned long previousMillis = 0;                                   // Timer that will used in print_values() funtion.  
 const long interval = 10000;                                        // Set duration between readings in millis e.g. 10 000 = 10s 
-
 int counter = 0;                                                    // start counter.  used in SPG30 fucntion to call baseline readings 
 
 Adafruit_ST7789 tft = Adafruit_ST7789(TFT_CS, TFT_DC, TFT_RST);     // Hardware SPI
@@ -62,10 +59,11 @@ void setup() {
 
   Serial.begin(115200);                                                                // Start serial
 
-  pinMode(FAN, OUTPUT);                                                                // sets the pin as output
-  //analogWrite(FAN, 230);           
-  analogWriteResolution(FAN, 12);                                                      // sets analogWrite resolution to 12 bits
-  analogWrite(FAN, 3000, 1000);                                                        // 3000/4095 = ~73% duty cycle at 1kHz               
+  pinMode(A2, OUTPUT);                                                                 // sets the pin as output
+  analogWriteResolution(A2, 12);                                                    // sets analogWrite resolution to 12 bits
+  int maxFreq = analogWriteMaxFrequency(A2);
+  // analogWrite (A2,255,maxFreq);  
+  analogWrite(A2, 3000, maxFreq / 2);                                               // 2000/4095 = ~50% duty cycle                                                             
   
   tft.init(240, 320);                                                                  // Init ST7789 320x240 
   tft.fillScreen(ST77XX_BLACK);                                                        // creates black background in dsiplay
@@ -135,7 +133,6 @@ void measure() {
           tvoc_state[2] = 0;
           tvoc_state[3] = 1;
   } 
-
 
 
 if ((sgp.eCO2 >= 0) && (sgp.eCO2 <= 1000) && (co2_state[0] == 0)) {
